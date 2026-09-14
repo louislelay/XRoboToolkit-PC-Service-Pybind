@@ -30,14 +30,14 @@ Building the extension is only possible on Linux and Windows; macOS is
 unsupported (no vendor binaries exist).
 
 ```bash
-# Build and install into the current environment
-uv pip install .   # or: pip install .
+# Create .venv (Python from .python-version), build and install the package
+uv sync
+
+# Run an example inside the project venv
+uv run examples/example.py
 
 # Build sdist + wheel
 uv build
-
-# Uninstall
-uv pip uninstall xrobotoolkit-sdk
 ```
 
 Release wheels are built by cibuildwheel in `.github/workflows/wheels.yml`

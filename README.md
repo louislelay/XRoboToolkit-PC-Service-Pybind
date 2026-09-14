@@ -12,21 +12,33 @@ SDK download or build is needed.
 
 ## Installation
 
-From PyPI (once published):
+### From PyPI (once published)
 
 ```bash
-pip install xrobotoolkit-sdk
-# or
 uv add xrobotoolkit-sdk
+# or
+pip install xrobotoolkit-sdk
 ```
 
-From source (requires CMake and a C++17 compiler):
+### From source
+
+If you do not have [uv](https://docs.astral.sh/uv/) installed, run:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Then (requires CMake and a C++17 compiler):
 
 ```bash
 git clone https://github.com/XR-Robotics/XRoboToolkit-PC-Service-Pybind.git
 cd XRoboToolkit-PC-Service-Pybind
-uv pip install .   # or: pip install .
+uv sync
 ```
+
+`uv sync` creates `.venv/` with the Python version pinned in `.python-version`,
+builds the extension, and installs the package into it. Run scripts with e.g.
+`uv run examples/example.py`.
 
 To build distributable artifacts locally: `uv build` (wheels for Linux/Windows
 are also built in CI via cibuildwheel, see `.github/workflows/wheels.yml`).
