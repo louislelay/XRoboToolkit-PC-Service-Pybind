@@ -1,0 +1,53 @@
+[build-system]
+requires = ["scikit-build-core>=0.11", "pybind11>=2.13"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "xrobotoolkit-sdk"
+version = "1.1.0"
+description = "Python bindings for the XRoboToolkit PC Service SDK (PICO XR controller, hand, and body tracking)."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Zhigen Zhao", email = "zhigen.zhao@bytedance.com" }]
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: C++",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
+  "Topic :: Scientific/Engineering",
+]
+
+[project.urls]
+Homepage = "https://github.com/XR-Robotics/XRoboToolkit-PC-Service-Pybind"
+Upstream = "https://github.com/XR-Robotics/XRoboToolkit-PC-Service"
+
+[tool.scikit-build]
+minimum-version = "build-system.requires"
+wheel.packages = ["src/xrobotoolkit_sdk"]
+
+# Rebuild the extension when any of these change (uv caches builds otherwise).
+[tool.uv]
+cache-keys = [
+  { file = "pyproject.toml" },
+  { file = "CMakeLists.txt" },
+  { file = "bindings/**" },
+  { file = "vendor/**" },
+]
+
+[tool.cibuildwheel]
+archs = ["auto64"]
+# Skip musl (no vendored musl lib) and free-threaded CPython (pybind11
+# free-threading support is experimental; Windows link also fails on it).
+skip = "*-musllinux* cp3*t-*"
+test-command = 'python -c "import xrobotoolkit_sdk"'
+
+[tool.cibuildwheel.linux]
+# The vendored aarch64 libPXREARobotSDK.so requires glibc >= 2.34, the x86_64
+# one glibc >= 2.29, so manylinux_2_34 is the oldest tag both can claim.
+manylinux-x86_64-image = "manylinux_2_34"
+manylinux-aarch64-image = "manylinux_2_34"
+# libPXREARobotSDK.so is already bundled in the package with rpath $ORIGIN;
+# exclude it so auditwheel does not graft a second copy into .libs.
+repair-wheel-command = "auditwheel repair --exclude libPXREARobotSDK.so -w {dest_dir} {wheel}"
