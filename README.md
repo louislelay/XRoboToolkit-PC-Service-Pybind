@@ -4,48 +4,32 @@ This project provides a python interface to extract XR state using XRoboToolkit-
 
 ## Requirements
 
-- [`pybind11`](https://github.com/pybind/pybind11)
-- [`XRoboRoolkit PC Service`](https://github.com/XR-Robotics/XRoboToolkit-PC-Service#)
+- Linux (x86_64 or aarch64, e.g. NVIDIA Orin) or Windows (x64), Python >= 3.10
+- A running [XRoboToolkit PC Service](https://github.com/XR-Robotics/XRoboToolkit-PC-Service) with a connected PICO headset (at runtime)
 
-## Building the Project
-### Ubuntu 22.04
+The prebuilt `PXREARobotSDK` binaries are vendored in `vendor/`, so no manual
+SDK download or build is needed.
 
+## Installation
+
+From PyPI (once published):
+
+```bash
+pip install xrobotoolkit-sdk
+# or
+uv add xrobotoolkit-sdk
 ```
-conda remove --name xr --all
-conda create -n xr python=3.10
-conda activate xr
 
-mkdir -p tmp
-cd tmp
-git clone https://github.com/XR-Robotics/XRoboToolkit-PC-Service.git
-cd XRoboToolkit-PC-Service/RoboticsService/PXREARobotSDK 
-bash build.sh
-cd ../../../..
+From source (requires CMake and a C++17 compiler):
 
-mkdir -p lib
-mkdir -p include
-cp tmp/XRoboToolkit-PC-Service/RoboticsService/PXREARobotSDK/PXREARobotSDK.h include/
-cp -r tmp/XRoboToolkit-PC-Service/RoboticsService/PXREARobotSDK/nlohmann include/nlohmann/
-cp tmp/XRoboToolkit-PC-Service/RoboticsService/PXREARobotSDK/build/libPXREARobotSDK.so lib/
-# rm -rf tmp
-
-# Build the project
-conda install -c conda-forge pybind11
-
-pip uninstall -y xrobotoolkit_sdk
-python setup.py install
+```bash
+git clone https://github.com/XR-Robotics/XRoboToolkit-PC-Service-Pybind.git
+cd XRoboToolkit-PC-Service-Pybind
+uv pip install .   # or: pip install .
 ```
-### Linux Ubuntu 22.04 arm64 version (Nvidia orin supported)
-```
-bash setup_orin.sh
-```
-### Windows
 
-**Ensure pybind11 is installed before running the following command.**
-
-```
-setup_windows.bat
-```
+To build distributable artifacts locally: `uv build` (wheels for Linux/Windows
+are also built in CI via cibuildwheel, see `.github/workflows/wheels.yml`).
 
 ## Using the Python Bindings
 

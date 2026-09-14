@@ -23,40 +23,26 @@ Key components:
 
 ## Build Commands
 
-### Ubuntu/Linux Setup and Build
+The project is uv-first and uses scikit-build-core as its build backend.
+Prebuilt PXREARobotSDK binaries are vendored in `vendor/` (Linux x86_64,
+Linux aarch64, Windows amd64), so no SDK download or build step is needed.
+Building the extension is only possible on Linux and Windows; macOS is
+unsupported (no vendor binaries exist).
+
 ```bash
-# Full setup (downloads dependencies and builds)
-bash setup_ubuntu.sh
+# Build and install into the current environment
+uv pip install .   # or: pip install .
 
-# Manual build after setup
-python setup.py install
+# Build sdist + wheel
+uv build
 
-# Clean build artifacts
-python setup.py clean
+# Uninstall
+uv pip uninstall xrobotoolkit-sdk
 ```
 
-### Windows Setup and Build
-```batch
-# Full setup (downloads dependencies and builds)
-setup_windows.bat
-
-# Manual build after setup
-python setup.py install
-```
-
-### Development Commands
-```bash
-# Uninstall existing package
-pip uninstall -y xrobotoolkit_sdk
-
-# Install pybind11 dependency
-conda install -c conda-forge pybind11
-# or
-pip install pybind11
-
-# Build and install
-python setup.py install
-```
+Release wheels are built by cibuildwheel in `.github/workflows/wheels.yml`
+(manylinux_2_34 for both Linux arches, dictated by the vendored libraries'
+glibc requirements — see `vendor/README.md`).
 
 ## Data Flow and Threading
 
@@ -84,13 +70,12 @@ The SDK uses a callback-based architecture:
 
 ## Dependencies
 
-### Required
-- pybind11 (Python binding framework)
-- CMake (build system)
-- XRoboToolkit-PC-Service SDK (automatically downloaded during setup)
+### Required (build time)
+- CMake >= 3.18 and a C++17 compiler
+- pybind11 and scikit-build-core (fetched automatically by the build backend)
 
-### Platform-specific Libraries
-- Linux: `libPXREARobotSDK.so`
+### Platform-specific Libraries (vendored in `vendor/`)
+- Linux: `libPXREARobotSDK.so` (x86_64 and aarch64 variants)
 - Windows: `PXREARobotSDK.dll` and `PXREARobotSDK.lib`
 
 ## Testing
