@@ -38,7 +38,9 @@ cache-keys = [
 
 [tool.cibuildwheel]
 archs = ["auto64"]
-skip = "pp* *-musllinux*"
+# Skip musl (no vendored musl lib) and free-threaded CPython (pybind11
+# free-threading support is experimental; Windows link also fails on it).
+skip = "*-musllinux* cp3*t-*"
 test-command = 'python -c "import xrobotoolkit_sdk"'
 
 [tool.cibuildwheel.linux]
